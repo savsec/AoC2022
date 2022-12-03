@@ -113,4 +113,60 @@ defmodule Aoc2022 do
     |> Enum.sum()
   end
 
+
+## Day 3
+#
+
+  def compute_priorities(char) do
+    [c|tail] = char
+    cond do
+      c>=97 -> c-96
+      c<97 -> c-(65-27)
+    end 
+  end
+
+  def split_charlist(chrlst) do
+    half = round(length(chrlst)/2)
+    Enum.chunk_every(chrlst, half, half, [])
+  end
+
+  def find_similar_char(tuple_of_chrlsts) do
+    {chrlst1, chrlst2} = tuple_of_chrlsts
+    diff = chrlst1 -- chrlst2
+    chrlst1 -- diff
+  end
+
+  def find_common_char(three_chrlsts) do
+    {chrlst1, chrlst2, chrlst3} = three_chrlsts
+    common12 = find_similar_char({chrlst1, chrlst2})
+    common13 = find_similar_char({chrlst1, chrlst3})
+    find_similar_char({common12, common13})
+  end
+
+
+  def day3_part1(input) do
+    input 
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn x -> to_charlist(x) end)
+    |> Enum.map(fn x -> split_charlist(x) end)
+    |> Enum.map(fn x -> List.to_tuple(x) end)
+    |> Enum.map(fn x -> find_similar_char(x) end)
+    |> Enum.map(fn x -> compute_priorities(x) end)
+    |> Enum.sum()
+  end
+
+  def day3_part2(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn x -> to_charlist(x) end)
+    |> Enum.chunk_every(3)
+    |> Enum.map(fn x -> List.to_tuple(x) end)
+    |> Enum.map(fn x -> find_common_char(x) end) 
+    |> Enum.map(fn x -> compute_priorities(x) end)
+    |> Enum.sum()
+  end
+
+
+  
+
 end

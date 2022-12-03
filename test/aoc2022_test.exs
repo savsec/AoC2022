@@ -22,4 +22,14 @@ defmodule Aoc2022Test do
     input = File.read!("data/day2.txt")
     assert Aoc2022.day2_part2(input) == 13509
   end
+
+  test "day 3 part 1" do
+    input = File.read!("data/day3.txt")
+    assert Aoc2022.day3_part1(input) == 7872
+  end
+
+  test "day 3 part 2" do
+    input = File.read!("data/day3.txt")
+    assert Aoc2022.day3_part2(input) == 2497
+  end
 end
