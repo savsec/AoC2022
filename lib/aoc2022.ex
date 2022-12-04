@@ -166,7 +166,54 @@ defmodule Aoc2022 do
     |> Enum.sum()
   end
 
-
+  # Day4
   
+  def day4_parser(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn x -> String.split(x, ",") end)
+    |> Enum.map(fn x -> Enum.map(x, fn y -> String.split(y, "-") end) end)
+    |> Enum.map(fn x -> Enum.map(x, fn y -> Enum.map(y, fn z -> String.to_integer(z) end) end) end)
+    |> Enum.map(fn x -> Enum.map(x, fn y -> List.to_tuple(y) end) end)
+    |> Enum.map(fn x -> List.to_tuple(x) end)
+  end
+
+  def inside_check(two_tuples) do
+    {tuple1, tuple2} = two_tuples
+    {begin_section1, end_section1} = tuple1
+    {begin_section2, end_section2} = tuple2
+    cond do
+      begin_section1 >= begin_section2 and end_section1 <= end_section2 -> 1
+      begin_section1 <= begin_section2 and end_section1 >= end_section2 -> 1
+      true -> 0
+    end
+  end
+
+  def overlap_check(two_tuples) do
+    {tuple1, tuple2} = two_tuples
+    {begin_section1, end_section1} = tuple1
+    {begin_section2, end_section2} = tuple2
+    cond do
+      begin_section1 <= begin_section2 and begin_section2 <= end_section1 -> 1
+      begin_section2 <= begin_section1 and begin_section1 <= end_section2 -> 1
+      true -> 0
+    end
+  end
+
+
+
+  def day4_part1(input) do
+    input
+    |> day4_parser()
+    |> Enum.map(fn x -> inside_check(x) end)
+    |> Enum.sum()
+  end
+
+  def day4_part2(input) do
+    input
+    |> day4_parser()
+    |> Enum.map(fn x -> overlap_check(x) end)
+    |> Enum.sum()
+  end 
 
 end
