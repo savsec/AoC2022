@@ -294,4 +294,45 @@ defmodule Aoc2022 do
     |> Enum.reduce("", fn ({_k,v}, acc) -> acc <> String.at(v, 0) end)
   end
 
+  #Day6
+  #
+  def shingler(str, n) when str != "" do
+    next_shingle = String.slice(str, 0..n-1)
+    rest_of_str = String.slice(str, 1..-1)
+    [next_shingle | shingler(rest_of_str, n)]
+  end
+
+  def shingler("", _n) do
+    []
+  end
+
+  def contains_repeated_char(str) do
+    l = String.length(str)
+    new_l = str
+    |> String.to_charlist()
+    |> Enum.uniq()
+    |> length()
+    l > new_l
+  end
+
+  def day6_main(input, n_char) do 
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&shingler(&1, n_char))
+    |> Enum.map(fn x -> Enum.map(x, &contains_repeated_char/1) end)
+    |> Enum.map(fn x -> Enum.find_index(x, fn y -> not y end) end)
+    |> Enum.map(fn x -> x + n_char end)
+    |> Enum.sum()
+  end
+
+  def day6_part1(input) do
+    input
+    |> day6_main(4)
+  end
+
+  def day6_part2(input) do
+    input
+    |> day6_main(14)
+  end
+
 end

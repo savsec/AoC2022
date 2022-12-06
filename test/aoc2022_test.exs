@@ -60,4 +60,18 @@ defmodule Aoc2022Test do
     input = File.read!("data/day5.txt")
     assert Aoc2022.day5_part2(input) == "SSCGWJCRB"
   end
+  
+  test "day 6 part 1" do
+    input_small = File.read!("data/day6_small_test.txt")
+    assert Aoc2022.day6_part1(input_small) == 39
+    input = File.read!("data/day6.txt")
+    assert Aoc2022.day6_part1(input) == 1625
+  end
+
+  test "day 6 part 2" do
+    input_small = File.read!("data/day6_small_test.txt")
+    assert Aoc2022.day6_part2(input_small) == 120
+    input = File.read!("data/day6.txt")
+    assert Aoc2022.day6_part2(input) == 2250
+  end
 end
