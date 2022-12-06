@@ -5,7 +5,7 @@ defmodule Aoc2022Test do
 
   test "day 1" do
     day_1 = File.read!("data/day1.txt")
-    assert Aoc2022.day1(day_1) == 71124
+    assert Aoc2022.day1_part1(day_1) == 71124
   end
 
   test "day 1 part 2" do
@@ -15,7 +15,7 @@ defmodule Aoc2022Test do
 
   test "day 2 part 1" do
     input = File.read!("data/day2.txt")
-    assert Aoc2022.day2(input) == 13446
+    assert Aoc2022.day2_part1(input) == 13446
   end
 
   test "day 2 part 2" do
@@ -45,5 +45,19 @@ defmodule Aoc2022Test do
     input = File.read!("data/day4.txt")
     assert Aoc2022.day4_part2(input_1)==3
     assert Aoc2022.day4_part2(input) == 830
+  end
+
+  test "day 5 part 1" do
+    input_small = File.read!("data/day5_small_test.txt")
+    assert Aoc2022.day5_part1(input_small) == "CMZ"
+    input = File.read!("data/day5.txt")
+    assert Aoc2022.day5_part1(input) == "CWMTGHBDW"
+  end
+
+  test "day 5 part 2" do
+    input_small = File.read!("data/day5_small_test.txt")
+    assert Aoc2022.day5_part2(input_small) == "MCD"
+    input = File.read!("data/day5.txt")
+    assert Aoc2022.day5_part2(input) == "SSCGWJCRB"
   end
 end

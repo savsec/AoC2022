@@ -1,11 +1,11 @@
 defmodule Aoc2022 do
 
+  # Day1
   def parse_input(str) do
-    mapped_split = fn(s) -> String.split(s, "\n", trim: true) end
     str 
     |> String.split("\n\n") 
-    |> Enum.map(mapped_split) 
-    |> Enum.map(fn (l) -> Enum.map(l, fn s -> String.to_integer(s) end) end)
+    |> Enum.map(&String.split(&1, "\n", trim: true)) 
+    |> Enum.map(fn l -> Enum.map(l, &String.to_integer/1) end)
   end
 
   def nlargest(lst, n) when n > 0 do
@@ -15,6 +15,23 @@ defmodule Aoc2022 do
   def nlargest(_lst, 0) do
     []
   end
+
+  def day1_part1(input) do
+    input 
+    |> parse_input() 
+    |> Enum.map(&Enum.sum/1) 
+    |> Enum.max()
+  end
+
+  def day1_part2(input) do
+    input 
+    |> parse_input() 
+    |> Enum.map(&Enum.sum/1) 
+    |> nlargest(3) 
+    |> Enum.sum()
+  end
+
+  #Day2
 
   def rps_scorer(round) do
     {opponent, player} = round
@@ -79,23 +96,7 @@ defmodule Aoc2022 do
 
 
 
-
-  def day1(input) do
-    input 
-    |> parse_input() 
-    |> Enum.map(fn l -> Enum.sum(l) end) 
-    |> Enum.max()
-  end
-
-  def day1_part2(input) do
-    input 
-    |> parse_input() 
-    |> Enum.map(fn (l) -> Enum.sum(l) end) 
-    |> nlargest(3) 
-    |> Enum.sum()
-  end
-
-  def day2(input) do
+  def day2_part1(input) do
     input
     |> String.split("\n", trim: true)
     |> Enum.map(fn s -> String.split(s, " ") end)
@@ -104,8 +105,7 @@ defmodule Aoc2022 do
     |> Enum.sum()
   end
 
-  def day2_part2(input) do
-    input
+  def day2_part2(input) do input
     |> String.split("\n", trim: true)
     |> Enum.map(fn s -> String.split(s, " ") end)
     |> Enum.map(fn s -> List.to_tuple(s) end)
@@ -114,11 +114,11 @@ defmodule Aoc2022 do
   end
 
 
-## Day 3
+## Day3
 #
 
   def compute_priorities(char) do
-    [c|tail] = char
+    [c|_tail] = char
     cond do
       c>=97 -> c-96
       c<97 -> c-(65-27)
@@ -127,7 +127,7 @@ defmodule Aoc2022 do
 
   def split_charlist(chrlst) do
     half = round(length(chrlst)/2)
-    Enum.chunk_every(chrlst, half, half, [])
+    Enum.chunk_every(chrlst, half)
   end
 
   def find_similar_char(tuple_of_chrlsts) do
@@ -143,26 +143,25 @@ defmodule Aoc2022 do
     find_similar_char({common12, common13})
   end
 
-
   def day3_part1(input) do
     input 
     |> String.split("\n", trim: true)
-    |> Enum.map(fn x -> to_charlist(x) end)
-    |> Enum.map(fn x -> split_charlist(x) end)
-    |> Enum.map(fn x -> List.to_tuple(x) end)
-    |> Enum.map(fn x -> find_similar_char(x) end)
-    |> Enum.map(fn x -> compute_priorities(x) end)
+    |> Enum.map(&to_charlist/1)
+    |> Enum.map(&split_charlist/1)
+    |> Enum.map(&List.to_tuple/1)   
+    |> Enum.map(&find_similar_char/1) 
+    |> Enum.map(&compute_priorities/1)
     |> Enum.sum()
   end
 
   def day3_part2(input) do
-    input
+    input 
     |> String.split("\n", trim: true)
-    |> Enum.map(fn x -> to_charlist(x) end)
+    |> Enum.map(&to_charlist/1)
     |> Enum.chunk_every(3)
-    |> Enum.map(fn x -> List.to_tuple(x) end)
-    |> Enum.map(fn x -> find_common_char(x) end) 
-    |> Enum.map(fn x -> compute_priorities(x) end)
+    |> Enum.map(&List.to_tuple/1)   
+    |> Enum.map(&find_common_char/1) 
+    |> Enum.map(&compute_priorities/1)
     |> Enum.sum()
   end
 
@@ -171,11 +170,11 @@ defmodule Aoc2022 do
   def day4_parser(input) do
     input
     |> String.split("\n", trim: true)
-    |> Enum.map(fn x -> String.split(x, ",") end)
-    |> Enum.map(fn x -> Enum.map(x, fn y -> String.split(y, "-") end) end)
-    |> Enum.map(fn x -> Enum.map(x, fn y -> Enum.map(y, fn z -> String.to_integer(z) end) end) end)
-    |> Enum.map(fn x -> Enum.map(x, fn y -> List.to_tuple(y) end) end)
-    |> Enum.map(fn x -> List.to_tuple(x) end)
+    |> Enum.map(&String.split(&1,","))
+    |> Enum.map(fn x -> Enum.map(x, &String.split(&1, "-")) end)
+    |> Enum.map(fn x -> Enum.map(x, fn y -> Enum.map(y, &String.to_integer/1) end) end)
+    |> Enum.map(fn x -> Enum.map(x, &List.to_tuple/1) end)
+    |> Enum.map(&List.to_tuple/1)
   end
 
   def inside_check(two_tuples) do
@@ -215,5 +214,84 @@ defmodule Aoc2022 do
     |> Enum.map(fn x -> overlap_check(x) end)
     |> Enum.sum()
   end 
+
+  #Day5
+  
+  def fold_to_map(move_list) do
+    move_list
+    |> Enum.chunk_every(2)
+    |> Map.new(fn [k,v] -> {String.to_atom(k), String.to_integer(v)} end)
+  end
+
+  def parse_moves(moves_string) do
+    moves_string
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.split(&1, " ", trim: true))
+    |> Enum.map(&fold_to_map/1)
+  end
+
+  def parse_crates(crate_string) do
+    crate_string
+    |> String.to_charlist()
+    |> Enum.chunk_every(4)
+    |> Enum.map(&to_string/1)
+    |> Enum.map(fn x -> String.replace(x, ~r"[^[:upper:]]", "") end)
+  end
+
+  def parse_initial_position(some_lines) do
+    [stacks | crates] = some_lines
+    |> String.split("\n")
+    |> Enum.reverse()
+    stack_numbers = stacks 
+                    |> String.split(" ", trim: true) 
+                    |> Enum.map(&String.to_integer/1) 
+    crate_letters = crates 
+                    |> Enum.map(fn x -> parse_crates(x) end) 
+                    |> Enum.zip()
+                    |> Enum.map(&Tuple.to_list/1)
+                    |> Enum.map(&Enum.reverse/1)
+                    |> Enum.map(&Enum.join/1)
+    Enum.zip(stack_numbers, crate_letters) |> Enum.into(%{})
+  end
+
+  def make_move(stack_crate_map, move, reverse \\ true) do
+    {:ok, from_crate} = Map.fetch(stack_crate_map, move.from)
+    {:ok, to_crate} = Map.fetch(stack_crate_map, move.to)
+    nmoves = move.move
+    moved_crates = cond do
+      reverse -> from_crate |> String.slice(0..nmoves-1) |> String.reverse()
+      true -> from_crate |> String.slice(0..nmoves-1)
+    end
+    updated_from_crate = from_crate |> String.slice(move.move..-1)
+    updated_to_crate = moved_crates <> to_crate
+    stack_crate_map = %{stack_crate_map | move.from => updated_from_crate} 
+    %{stack_crate_map | move.to => updated_to_crate}
+  end
+
+  def make_all_moves(positions, list_of_moves, reverse) when list_of_moves != [] do
+    [next_move | rest_of_moves] = list_of_moves
+    new_positions = make_move(positions, next_move, reverse)
+    make_all_moves(new_positions, rest_of_moves, reverse)
+  end
+
+  def make_all_moves(positions, [], _reverse) do
+    positions
+  end
+
+  def day5_part1(input) do
+    [starting_configs, moves_string | _] = input |> String.split("\n\n")
+    stack_crate_map = parse_initial_position(starting_configs)
+    moves = parse_moves(moves_string)
+    make_all_moves(stack_crate_map, moves, true) 
+    |> Enum.reduce("", fn ({_k,v}, acc) -> acc <> String.at(v, 0) end)
+  end
+
+  def day5_part2(input) do
+    [starting_configs, moves_string | _] = input |> String.split("\n\n")
+    stack_crate_map = parse_initial_position(starting_configs)
+    moves = parse_moves(moves_string)
+    make_all_moves(stack_crate_map, moves, false) 
+    |> Enum.reduce("", fn ({_k,v}, acc) -> acc <> String.at(v, 0) end)
+  end
 
 end
